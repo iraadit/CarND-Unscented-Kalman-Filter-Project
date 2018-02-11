@@ -76,6 +76,9 @@ UKF::UKF() {
   R_laser_ << std_laspx_*std_laspx_,  0,
               0,                      std_laspy_*std_laspy_;
 
+  // Set to calculate and output radar NIS
+  output_NIS = true;
+
   is_initialized_ = false;
 }
 
@@ -134,10 +137,12 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
     Prediction(delta_t);
   }
 
+/*
   std::cout << "Predicted state" << std::endl;
   std::cout << x_ << std::endl;
   std::cout << "Predicted covariance matrix" << std::endl;
   std::cout << P_ << std::endl;
+*/
 
   /**
   * Update
@@ -283,14 +288,22 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   Complete this function! Use lidar data to update the belief about the object's
   position. Modify the state vector, x_, and covariance, P_.
 
-  You'll also need to calculate the lidar NIS.
+  Output the Lidar NIS if desired.
   */
   //set measurement dimension, radar can measure r, phi, and r_dot
   int n_z = 2;
   // Transform sigma points into measurement space
   MatrixXd Zsig = Xsig_pred_.block(0, 0, n_z, n_sig_);
   // Update step
-  UpdateUKF(meas_package, Zsig, n_z);
+  double NIS = UpdateUKF(meas_package, Zsig, n_z);
+
+  if (output_NIS){
+    ofstream fout;
+    fout.open("Lidar_NIS.txt", ios::app);
+    cout << "Lidar_NIS: " << NIS << endl;
+    fout << NIS << endl;
+    fout.close();
+  }
 }
 
 /**
@@ -301,6 +314,8 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
   /**
   Use radar data to update the belief about the object's
   position. Modify the state vector, x_, and covariance, P_.
+
+  Output the Radar NIS if desired.
   */
   //set measurement dimension, radar can measure r, phi, and r_dot
   int n_z = 3;
@@ -324,7 +339,15 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     Zsig(2,i) = (p_x*v1 + p_y*v2 ) / sqrt(p_x*p_x + p_y*p_y);   //r_dot
   }
   // Update step
-  UpdateUKF(meas_package, Zsig, n_z);
+  double NIS = UpdateUKF(meas_package, Zsig, n_z);
+
+  if (output_NIS){
+    ofstream fout;
+    fout.open("Radar_NIS.txt", ios::app);
+    cout << "Radar_NIS: " << NIS << endl;
+    fout << NIS << endl;
+    fout.close();
+  }
 }
 
 /**
@@ -332,8 +355,9 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
  * @param {MeasurementPackage} meas_package
  * @param Zsig The measurement sigma matrix
  * @param n_z The measurement dimension
+ * @output double return the NIS
  */
-void UKF::UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, int n_z){
+double UKF::UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, int n_z){
   /**
   Use data to update the belief about the object's
   position. Modify the state vector, x_, and covariance, P_.
@@ -411,11 +435,8 @@ void UKF::UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, int n_z){
   x_ = x_ + K * z_diff;
   P_ = P_ - K*S*K.transpose();
 
-  // Calculate NIS
-  if (meas_package.sensor_type_ == MeasurementPackage::RADAR){ // Radar
-    NIS_radar_ = z.transpose() * S.inverse() * z;
-  }
-  else if (meas_package.sensor_type_ == MeasurementPackage::LASER){ // Lidar
-    NIS_laser_ = z.transpose() * S.inverse() * z;
-  }
+  //calculate the NIS
+  double NIS = z.transpose() * S.inverse() * z;
+
+  return NIS;
 }

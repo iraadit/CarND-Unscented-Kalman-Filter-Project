@@ -70,18 +70,14 @@ public:
   ///* Sigma dimension
   int n_sig_;
 
-  ///* Current NIS for radar
-  double NIS_radar_;
-
-  ///* Current NIS for laser
-  double NIS_laser_;
-
   ///* Measurement noise covariance matrix for RADAR
   MatrixXd R_radar_;
 
   ///* Measurement noise covariance matrix for LASER
   MatrixXd R_laser_;
 
+  ///* if this is true, NIS will be outputed in files
+  bool output_NIS = false;
   /**
    * Constructor
    */
@@ -122,8 +118,9 @@ public:
    * @param meas_package The measurement at k+1
    * @param Zsig The measurement sigma matrix
    * @param n_z The measurement dimension
+   * @output double return the NIS
    */
-  void UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, int n_z);
+  double UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, int n_z);
 
   /**
    * Normalize the angle

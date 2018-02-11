@@ -77,8 +77,8 @@ for data, confidence in zip(nis, confidences):
         , color='b'
         , linestyle='-'
         , label='95 confidence threshold')
-    ax.legend( prop={'size':20} )
-    ax.set_ylim([0,12])
+    ax.legend(prop={'size':20})
+    #ax.set_ylim([0,12])
 
     k = 0
     for nis in data:
@@ -89,8 +89,8 @@ for data, confidence in zip(nis, confidences):
 
     id += 1
 
-axes[0].set_title('Radar', fontsize=20)
-axes[1].set_title('Lidar', fontsize=20)
+axes[0].set_title('Radar: ' + str(ratios[0]) + '%', fontsize=20)
+axes[1].set_title('Lidar: ' + str(ratios[1]) + '%', fontsize=20)
 
 print("Radar percentage above chi-squared: " + str(ratios[0]))
 print("Lidar percentage above chi-squared: " + str(ratios[1]))

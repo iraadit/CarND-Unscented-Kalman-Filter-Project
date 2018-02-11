@@ -39,7 +39,7 @@ I implemented the Unscented Kalman Filter and ran with in the simulator.
 
 ![Result](Result.png)
 
-I outputed the NIS values and then plotted them against the $95\%$ line, $\chi^2.0.50$, being $7.915$ for the radar measurements ($df=3$) and $5.991$ for the lidar measurements ($df=2$) . I reused and improved code by [mcarilli](https://github.com/mcarilli/CarND-Unscented-Kalman-Filter) for that.
+I outputed the NIS values and then plotted them against the 95% line, chi^2.0.50, being 7.915 for the radar measurements (df=3) and 5.991 for the lidar measurements (df=2) . I reused and improved code by [mcarilli](https://github.com/mcarilli/CarND-Unscented-Kalman-Filter) for that.
 
 ![Result](NIS/NIS.png)
 
@@ -49,7 +49,7 @@ If much more than 5% of the NIS values computed from measurements exceed the thr
 
 If all of the NIS values computed from measurements fall well below the threshold, it means means the uncertainty of the process noise is overestimated and that the estimations are actually more precise than we think. The process noise should be decreased.
 
-The final ratio of the NIS over the $\chi^2.0.50$ thresholds are as follows:
+The final ratio of the NIS over the chi^2.0.50 thresholds are as follows:
 
 | Measurement source | NIS ratio 		 |
 | ------------------ | ----------------- |
@@ -60,15 +60,15 @@ Here, the uncertainty of the process noises are still overestimated but I'm sati
 
 | Measurement source | Process noise |
 | ------------------ | ----------------- |
-| Longitudinal acceleration | $1 m/s^2$ |
-| Yaw acceleration | $0.7 rad/s^2$ |
+| Longitudinal acceleration | 1 m/s^2 |
+| Yaw acceleration | 0.7 rad/s^2 |
 
 
 It is asked that RMSE should be less than or equal to the values [.09, .10, 0.40, 0.30]. The RMSE that I get are as following:
 
 | Input | RMSE   |
 | ----- | ------ |
-| $p_x$ | 0.0651 |
-| $p_y$ | 0.0830 |
-| $v_x$ | 0.3320 |
-| $v_y$ | 0.2139 |
+| px    | 0.0651 |
+| py    | 0.0830 |
+| vx    | 0.3320 |
+| vy    | 0.2139 |

@@ -78,6 +78,11 @@ public:
 
   ///* if this is true, NIS will be outputed in files
   bool output_NIS = false;
+
+  ///* Output filestreams for radar and lidar NIS
+  std::ofstream radar_NIS_file_;
+  std::ofstream lidar_NIS_file_;
+  
   /**
    * Constructor
    */

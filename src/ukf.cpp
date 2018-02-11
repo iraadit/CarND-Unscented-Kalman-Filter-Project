@@ -79,10 +79,25 @@ UKF::UKF() {
   // Set to calculate and output radar NIS
   output_NIS = true;
 
+  // Open NIS files
+  radar_NIS_file_.open("../NIS/Radar_NIS.txt", ios::out);
+  if(!radar_NIS_file_.is_open()){
+    cout << "Error opening Radar_NIS.txt" << endl;
+    exit(1);
+  }
+  lidar_NIS_file_.open("../NIS/Lidar_NIS.txt", ios::out);
+  if(!lidar_NIS_file_.is_open()){
+    cout << "Error opening Lidar_NIS.txt" << endl;
+    exit(1);
+  }
+
   is_initialized_ = false;
 }
 
-UKF::~UKF() {}
+UKF::~UKF() {
+  radar_NIS_file_.close();
+  lidar_NIS_file_.close();
+}
 
 /**
  * @param {MeasurementPackage} meas_package The latest measurement data of
@@ -298,11 +313,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
   double NIS = UpdateUKF(meas_package, Zsig, n_z);
 
   if (output_NIS){
-    ofstream fout;
-    fout.open("Lidar_NIS.txt", ios::app);
-    cout << "Lidar_NIS: " << NIS << endl;
-    fout << NIS << endl;
-    fout.close();
+    lidar_NIS_file_ << NIS << endl;
   }
 }
 
@@ -342,11 +353,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
   double NIS = UpdateUKF(meas_package, Zsig, n_z);
 
   if (output_NIS){
-    ofstream fout;
-    fout.open("Radar_NIS.txt", ios::app);
-    cout << "Radar_NIS: " << NIS << endl;
-    fout << NIS << endl;
-    fout.close();
+    radar_NIS_file_ << NIS << endl;
   }
 }
 

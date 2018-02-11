@@ -87,8 +87,6 @@ UKF::~UKF() {}
  */
 void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   /**
-  TODO:
-
   Complete this function! Make sure you switch between lidar and radar
   measurements.
   */
@@ -168,9 +166,7 @@ void UKF::NormAngle(double *angle) {
  */
 void UKF::Prediction(double delta_t) {
   /**
-  TODO:
-
-  Complete this function! Estimate the object's location. Modify the state
+  Estimate the object's location. Modify the state
   vector, x_. Predict sigma points, the state, and the state covariance matrix.
   */
   /**
@@ -279,13 +275,11 @@ void UKF::Prediction(double delta_t) {
 }
 
 /**
- * Updates the state and the state covariance matrix using a laser measurement.
+ * Represent the lidar prediction in the coordinate system as the measurement and call the update.
  * @param {MeasurementPackage} meas_package
  */
 void UKF::UpdateLidar(MeasurementPackage meas_package) {
   /**
-  TODO:
-
   Complete this function! Use lidar data to update the belief about the object's
   position. Modify the state vector, x_, and covariance, P_.
 
@@ -300,17 +294,13 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 }
 
 /**
- * Updates the state and the state covariance matrix using a radar measurement.
+ * Represent the radar prediction in the coordinate system as the measurement and call the update.
  * @param {MeasurementPackage} meas_package
  */
 void UKF::UpdateRadar(MeasurementPackage meas_package) {
   /**
-  TODO:
-
-  Complete this function! Use radar data to update the belief about the object's
+  Use radar data to update the belief about the object's
   position. Modify the state vector, x_, and covariance, P_.
-
-  You'll also need to calculate the radar NIS.
   */
   //set measurement dimension, radar can measure r, phi, and r_dot
   int n_z = 3;
@@ -337,8 +327,19 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
   UpdateUKF(meas_package, Zsig, n_z);
 }
 
-// Universal update function
+/**
+ * Updates the state and the state covariance matrix using radar or lidar measurement.
+ * @param {MeasurementPackage} meas_package
+ * @param Zsig The measurement sigma matrix
+ * @param n_z The measurement dimension
+ */
 void UKF::UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, int n_z){
+  /**
+  Use data to update the belief about the object's
+  position. Modify the state vector, x_, and covariance, P_.
+
+  Calculate the NIS.
+  */
   /**
   * Predict Measurement
   */

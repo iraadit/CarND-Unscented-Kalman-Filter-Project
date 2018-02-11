@@ -120,7 +120,7 @@ public:
   /**
    * Updates the state and the state covariance matrix
    * @param meas_package The measurement at k+1
-   * @param Zsig The measu sigma matrix
+   * @param Zsig The measurement sigma matrix
    * @param n_z The measurement dimension
    */
   void UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, int n_z);

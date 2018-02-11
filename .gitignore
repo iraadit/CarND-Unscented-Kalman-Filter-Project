@@ -3,3 +3,9 @@
 
 # build files
 build/
+
+\.cproject
+
+\.project
+
+\.settings/language\.settings\.xml

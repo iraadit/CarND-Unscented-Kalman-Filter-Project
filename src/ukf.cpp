@@ -443,7 +443,7 @@ double UKF::UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, int n_z){
   P_ = P_ - K*S*K.transpose();
 
   //calculate the NIS
-  double NIS = z.transpose() * S.inverse() * z;
+  double NIS = z_diff.transpose() * S.inverse() * z_diff;
 
   return NIS;
 }

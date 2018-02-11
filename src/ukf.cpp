@@ -110,6 +110,12 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
   */
   if (!is_initialized_) {
     // Initial covariance matrix
+    // could certainly be lowered
+    // From the lesson: Instead of setting each of the diagonal values to 1, you can try setting the
+    // diagonal values by how much difference you expect between the true state and the initialized x
+    // state vector. For example, in the project, we assume the standard deviation of the lidar x and
+    // y measurements is 0.15. If we initialized p_x with a lidar measurement, the initial variance or
+    // uncertainty in p_x would probably be less than 1.
     P_ << 1, 0, 0, 0, 0,
           0, 1, 0, 0, 0,
           0, 0, 1, 0, 0,

@@ -1,42 +1,11 @@
-# Unscented Kalman Filter Project Starter Code
-Self-Driving Car Engineer Nanodegree Program
+# Unscented Kalman Filter Project
+This Project is the seventh task (Project 2 of Term 2) of the Udacity Self-Driving Car Nanodegree program.
 
-In this project utilize an Unscented Kalman Filter to estimate the state of a moving object of interest with noisy lidar and radar measurements. Passing the project requires obtaining RMSE values that are lower that the tolerance outlined in the project rubric. 
+The main goal of the project is to apply Unscented Kalman Filter to estimate the state of a moving object of interest with noisy lidar and radar measurements using C++. Passing the project requires obtaining RMSE values that are lower that the tolerance outlined in the project rubric. 
+
+The project was created with the Udacity [Starter Code](https://github.com/udacity/CarND-Unscented-Kalman-Filter-Project).
 
 This project involves the Term 2 Simulator which can be downloaded [here](https://github.com/udacity/self-driving-car-sim/releases)
-
-This repository includes two files that can be used to set up and intall [uWebSocketIO](https://github.com/uWebSockets/uWebSockets) for either Linux or Mac systems. For windows you can use either Docker, VMware, or even [Windows 10 Bash on Ubuntu](https://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/) to install uWebSocketIO. Please see [this concept in the classroom](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/16cf4a78-4fc7-49e1-8621-3450ca938b77) for the required version and installation scripts.
-
-Once the install for uWebSocketIO is complete, the main program can be built and ran by doing the following from the project top directory.
-
-1. mkdir build
-2. cd build
-3. cmake ..
-4. make
-5. ./UnscentedKF
-
-Tips for setting up your environment can be found [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
-
-Note that the programs that need to be written to accomplish the project are src/ukf.cpp, src/ukf.h, tools.cpp, and tools.h
-
-The program main.cpp has already been filled out, but feel free to modify it.
-
-Here is the main protcol that main.cpp uses for uWebSocketIO in communicating with the simulator.
-
-
-INPUT: values provided by the simulator to the c++ program
-
-["sensor_measurement"] => the measurment that the simulator observed (either lidar or radar)
-
-
-OUTPUT: values provided by the c++ program to the simulator
-
-["estimate_x"] <= kalman filter estimated position x
-["estimate_y"] <= kalman filter estimated position y
-["rmse_x"]
-["rmse_y"]
-["rmse_vx"]
-["rmse_vy"]
 
 ---
 
@@ -57,36 +26,49 @@ OUTPUT: values provided by the c++ program to the simulator
 1. Clone this repo.
 2. Make a build directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
-4. Run it: `./UnscentedKF` Previous versions use i/o from text files.  The current state uses i/o
-from the simulator.
+4. Run it: `./UnscentedKF`. 
+5. Run Term 2 Simulator and then `Project 1/2: EKF and UKF`.It will use I/O from the simulator.
 
-## Editor Settings
+---
 
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
+## Results
 
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
+In this project, as asked, I used a "constant turn rate and velocity magnitude" (CTRV) process model to carry out the Kalman filter's prediction step.
 
-## Code Style
+I implemented the Unscented Kalman Filter and ran with in the simulator.
 
-Please stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html) as much as possible.
+![Result](Result.png)
 
-## Generating Additional Data
+I outputed the NIS values and then plotted them against the $95\%$ line, $\chi^2.0.50$, being $7.915$ for the radar measurements ($df=3$) and $5.991$ for the lidar measurements ($df=2$) . I reused and improved code by [mcarilli](https://github.com/mcarilli/CarND-Unscented-Kalman-Filter) for that.
 
-This is optional!
+![Result](NIS/NIS.png)
 
-If you'd like to generate your own radar and lidar data, see the
-[utilities repo](https://github.com/udacity/CarND-Mercedes-SF-Utilities) for
-Matlab scripts that can generate additional data.
+I then used the NIS plot to help me tune the process noise standard deviation values for longitudinal and yaw accelerations.
 
-## Project Instructions and Rubric
+If much more than 5% of the NIS values computed from measurements exceed the threshold, it means the uncertainty of the process noise is underestimated and that the estimations are actually less precise than we think. The process noise should be increased.
 
-This information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/c3eb3583-17b2-4d83-abf7-d852ae1b9fff/concepts/f437b8b0-f2d8-43b0-9662-72ac4e4029c1)
-for instructions and the project rubric.
+If all of the NIS values computed from measurements fall well below the threshold, it means means the uncertainty of the process noise is overestimated and that the estimations are actually more precise than we think. The process noise should be decreased.
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+The final ratio of the NIS over the $\chi^2.0.50$ thresholds are as follows:
 
+| Measurement source | NIS ratio 		 |
+| ------------------ | ----------------- |
+| RADAR              | 0.032%        |
+| LIDAR              | 0.020%           |
+
+Here, the uncertainty of the process noises are still overestimated but I'm satisfied with the result and will keep these process noise values:
+
+| Measurement source | Process noise |
+| ------------------ | ----------------- |
+| Longitudinal acceleration | $1 m/s^2$ |
+| Yaw acceleration | $0.7 rad/s^2$ |
+
+
+It is asked that RMSE should be less than or equal to the values [.09, .10, 0.40, 0.30]. The RMSE that I get are as following:
+
+| Input | RMSE   |
+| ----- | ------ |
+| $p_x$ | 0.0651 |
+| $p_y$ | 0.0830 |
+| $v_x$ | 0.3320 |
+| $v_y$ | 0.2139 |

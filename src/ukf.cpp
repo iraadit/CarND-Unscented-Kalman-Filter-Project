@@ -180,9 +180,8 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
  * Angle normalization to [-Pi, Pi]
  * @param {double} angle the angle to normalize.
  */
-void UKF::NormAngle(double *angle) {
-    while (*angle > M_PI) *angle -= 2. * M_PI;
-    while (*angle < -M_PI) *angle += 2. * M_PI;
+void UKF::NormAngle(double& angle) {
+    angle = atan2(sin(angle), cos(angle));
 }
 
 /**
@@ -297,7 +296,7 @@ void UKF::Prediction(double delta_t) {
     // state difference
     VectorXd x_diff = Xsig_pred_.col(i) - x_;
     //angle normalization
-    NormAngle(&(x_diff(3)));
+    NormAngle(x_diff(3));
 
     P_ = P_ + weights_(i) * x_diff * x_diff.transpose() ;
   }
@@ -403,7 +402,7 @@ double UKF::UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, int n_z){
     VectorXd z_diff = Zsig.col(i) - z_pred;
 
     //angle normalization
-    NormAngle(&(z_diff(1)));
+    NormAngle(z_diff(1));
 
     S = S + weights_(i) * z_diff * z_diff.transpose();
   }
@@ -429,12 +428,12 @@ double UKF::UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, int n_z){
     //residual
     VectorXd z_diff = Zsig.col(i) - z_pred;
     //angle normalization
-    NormAngle(&(z_diff(1)));
+    NormAngle(z_diff(1));
 
     // state difference
     VectorXd x_diff = Xsig_pred_.col(i) - x_;
     //angle normalization
-    NormAngle(&(x_diff(3)));
+    NormAngle(x_diff(3));
 
     Tc = Tc + weights_(i) * x_diff * z_diff.transpose();
   }
@@ -449,7 +448,7 @@ double UKF::UpdateUKF(MeasurementPackage meas_package, MatrixXd Zsig, int n_z){
   VectorXd z_diff = z - z_pred;
   if (meas_package.sensor_type_ == MeasurementPackage::RADAR){ // Radar
     // Angle normalization
-    NormAngle(&(z_diff(1)));
+    NormAngle(z_diff(1));
   }
 
   //update state mean and covariance matrix

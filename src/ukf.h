@@ -131,7 +131,7 @@ public:
    * Normalize the angle
    * @param angle angle to normalize
    */
-  void NormAngle(double *angle);
+  void NormAngle(double& angle);
 };
 
 #endif /* UKF_H */

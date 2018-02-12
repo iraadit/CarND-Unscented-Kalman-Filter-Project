@@ -120,11 +120,7 @@ void UKF::ProcessMeasurement(MeasurementPackage meas_package) {
     // state vector. For example, in the project, we assume the standard deviation of the lidar x and
     // y measurements is 0.15. If we initialized p_x with a lidar measurement, the initial variance or
     // uncertainty in p_x would probably be less than 1.
-    P_ << 1, 0, 0, 0, 0,
-          0, 1, 0, 0, 0,
-          0, 0, 1, 0, 0,
-          0, 0, 0, 1, 0,
-          0, 0, 0, 0, 1;
+    P_ = MatrixXd::Identity(5,5);
 
     double px, py;
     if (meas_package.sensor_type_ == MeasurementPackage::RADAR) {

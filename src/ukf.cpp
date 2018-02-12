@@ -354,9 +354,14 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     const double v2 = sin(yaw)*v;
 
     // measurement model
-    Zsig(0,i) = sqrt(p_x*p_x + p_y*p_y);                        //r
-    Zsig(1,i) = atan2(p_y,p_x);                                 //phi
-    Zsig(2,i) = (p_x*v1 + p_y*v2 ) / sqrt(p_x*p_x + p_y*p_y);   //r_dot
+    double eps = 0.001; //std::numeric_limits<double>::min();
+    double rho = sqrt(p_x*p_x + p_y*p_y);
+    double phi = atan2((abs(p_y) < eps) ? eps : p_y, (abs(p_x) < eps) ? eps : p_x);
+    double rho_dot = (p_x*v1 + p_y*v2) / std::max(eps, rho);
+    Zsig(0,i) = rho;
+    Zsig(1,i) = phi;
+    Zsig(2,i) = rho_dot;
+
   }
   // Update step
   double NIS = UpdateUKF(meas_package, Zsig, n_z);

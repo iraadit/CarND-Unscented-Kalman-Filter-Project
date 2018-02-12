@@ -77,26 +77,30 @@ UKF::UKF() {
               0,                      std_laspy_*std_laspy_;
 
   // Set to calculate and output radar NIS
-  output_NIS = true;
+  output_NIS = false;
 
-  // Open NIS files
-  radar_NIS_file_.open("../NIS/Radar_NIS.txt", ios::out);
-  if(!radar_NIS_file_.is_open()){
-    cout << "Error opening Radar_NIS.txt" << endl;
-    exit(1);
-  }
-  lidar_NIS_file_.open("../NIS/Lidar_NIS.txt", ios::out);
-  if(!lidar_NIS_file_.is_open()){
-    cout << "Error opening Lidar_NIS.txt" << endl;
-    exit(1);
+  if (output_NIS){
+    // Open NIS files
+    radar_NIS_file_.open("../NIS/Radar_NIS.txt", ios::out);
+    if(!radar_NIS_file_.is_open()){
+      cout << "Error opening Radar_NIS.txt" << endl;
+      exit(1);
+    }
+    lidar_NIS_file_.open("../NIS/Lidar_NIS.txt", ios::out);
+    if(!lidar_NIS_file_.is_open()){
+      cout << "Error opening Lidar_NIS.txt" << endl;
+      exit(1);
+    }
   }
 
   is_initialized_ = false;
 }
 
 UKF::~UKF() {
-  radar_NIS_file_.close();
-  lidar_NIS_file_.close();
+  if (output_NIS){
+    radar_NIS_file_.close();
+    lidar_NIS_file_.close();
+  }
 }
 
 /**

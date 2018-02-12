@@ -306,6 +306,10 @@ void UKF::Prediction(double delta_t) {
  * Represent the lidar prediction in the coordinate system as the measurement and call the update.
  * @param {MeasurementPackage} meas_package
  */
+/**
+ * TODO: to improve performance, use the linear Kalman equations for the Lidar because
+ * the measurement model is linear in this case.
+ */
 void UKF::UpdateLidar(MeasurementPackage meas_package) {
   /**
   Complete this function! Use lidar data to update the belief about the object's
